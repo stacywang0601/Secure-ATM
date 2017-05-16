@@ -28,6 +28,7 @@ public class redirect extends HttpServlet {
     //redirect to login.jsp
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
+				//redirect to login.jsp
 		request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
 	}
 

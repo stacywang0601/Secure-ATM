@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>boa3</display-name>
+  <listener>
+  	<listener-class>
+  		com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+  	</listener-class>
+  </listener>
+  <servlet>
+  	<description>JAX-WS endpoint - AccountManagerService</description>
+  	<display-name>AccountManagerService</display-name>
+  	<servlet-name>AccountManagerService</servlet-name>
+  	<servlet-class>
+  		com.sun.xml.ws.transport.http.servlet.WSServlet
+  	</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>AccountManagerService</servlet-name>
+  	<url-pattern>/AccountManagerPort</url-pattern>
+  </servlet-mapping>
+  
+  
+  <security-constraint>
+  	<web-resource-collection>
+     	<web-resource-name>Operator Roles Security</web-resource-name>
+     		<url-pattern>/*</url-pattern>
+     		<http-method>GET</http-method>
+      		<http-method>POST</http-method>
+      		
+		</web-resource-collection>
+  	<auth-constraint>
+	 	<role-name>operator</role-name>
+  	</auth-constraint>
+  	
+  	<user-data-constraint>
+		<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+  	</user-data-constraint>
+ </security-constraint>
+    
+    
+    <login-config>
+         <auth-method>DIGEST</auth-method>  
+         <realm-name>Digest Authentication</realm-name> 
+    </login-config>
+    
+    <security-role>
+        <description>Normal operator user</description>
+        <role-name>operator</role-name>
+    </security-role>
+  
+  </web-app>

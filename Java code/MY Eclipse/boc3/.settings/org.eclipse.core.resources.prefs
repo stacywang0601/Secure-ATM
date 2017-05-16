@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/commons/db/JdbcUtils.java=UTF-8
+encoding//src/commons/math/math.java=UTF-8
+encoding//src/dao/jdbc/Accountdao.java=UTF-8
+encoding//src/domain/imp/AccountManager.java=UTF-8
+encoding//src/web/BusinessServlet.java=UTF-8
+encoding//src/web/Loginservlet.java=UTF-8
+encoding//src/web/redirect.java=UTF-8

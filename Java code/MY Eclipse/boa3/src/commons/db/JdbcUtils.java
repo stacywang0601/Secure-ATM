@@ -15,20 +15,19 @@ import org.apache.commons.dbcp.BasicDataSourceFactory;
 
 
 public class JdbcUtils {
-	//放在外侧：都可以用
+	//static to share
 	private static DataSource dataSource = null;
-	//静态代码块放公用的东西；的没办法抛，就try处理掉
+	//can't throw exception in static block, so try
 	static{
 		Properties prop = new Properties();
+		//use relative path instead of absolute path
 	    InputStream inStream = JdbcUtils.class.getClassLoader().getResourceAsStream("commons//db//dbcpconfig.properties");//zuoxiayoushang
 	     //InputStream inStream = new FileInputStream("/Users/wenchaowang/Documents/workspace1/dbpc/src/dbcpconfig.properties");
 		try {
 			prop.load(inStream);
 			dataSource = BasicDataSourceFactory.createDataSource(prop);
 		} catch (Exception e) {
-			//因为找不到东西根本连不上数据库，所以try完了不处理，直接抛出严重错误
-			throw new ExceptionInInitializerError();
-			//finally 即使出异常，依旧可以关闭输入流，关闭不了顶多浪费点资源，所以打印一下即可
+			//can't connection if can't find properties, serious problem, throw
 		}finally{
 			try {
 				inStream.close();
@@ -39,16 +38,16 @@ public class JdbcUtils {
 		}
 		
 	}
-	//获取数据源
+	//get datasource
 	public static DataSource getDataSource(){
 		return dataSource; 
 	}
-	//获取连接；直接抛出，工具类，被别人调用，你要是认为严重就抛
+	//get connection；throw exception since it is an util class
 	public static Connection getConnection() throws SQLException{
 		return dataSource.getConnection(); 
 	}
 	public static void release(ResultSet rs,Statement pstmt, Connection con) throws SQLException{
-		//finally上面异常，下面依旧可以执行；没有catch，没有处理，抛出去，工具类，被别人调用，你要是认为严重就抛
+		//use funally to ensure the code to be excuted
 		try {
 				if (rs != null){
 				rs.close();

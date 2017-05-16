@@ -3,7 +3,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import commons.db.JdbcUtils;
 import commons.math.math;
 import dao.IAccountdao;
@@ -15,12 +14,12 @@ public class Accountdao implements IAccountdao {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		//password与数据库列表一致
+		//cardnum password same as in db
 		String sql = "select * from accounts where cardnum=? and password=?";
 		boolean flag = false;
 		
 		try{
-			//创建连接
+			//set up connection using JdbcUtils
 			conn = JdbcUtils.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, cardnum);
@@ -32,18 +31,18 @@ public class Accountdao implements IAccountdao {
 				
 			
 		}catch(Exception e){
-			//严重的错误，要运行错误
+			//serious problem
 			new RuntimeException(e);
 		}finally{
-			//保证释放正常运行
+			//ensure to close properly
 			try {
 				JdbcUtils.release(rs, pstmt, conn);
 			} catch (SQLException e) {
-				// 没释放也没有太多关系，所以直接打印处理
+				// not too serious ,just print
 				e.printStackTrace();
 			}
 		}
-		//返回false
+		//return false if no account found
 		return flag;
 	}
 
@@ -61,7 +60,7 @@ public class Accountdao implements IAccountdao {
 		double money = -1;
 		
 		try{
-			//创建连接
+			//set up connection
 			conn = JdbcUtils.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, cardnum);
@@ -70,18 +69,14 @@ public class Accountdao implements IAccountdao {
 				money = rs.getDouble("account");
 			}				
 		}catch(Exception e){
-			//���������������������������������������������������������������������������������������������������
 			new RuntimeException(e);
 		}finally{
-			//������������������������������������������������������������������������
 			try {
 				JdbcUtils.release(rs, pstmt, conn);
 			} catch (SQLException e) {
-				// ���������������������������������������������������������������������������������������������������������������������������������������������������������������������������
 				e.printStackTrace();
 			}
 		}
-		//������������������false
 		return money;
 	}
 
@@ -90,17 +85,14 @@ public class Accountdao implements IAccountdao {
 		Connection  conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		//先查看原来有多少钱，再更新
+		//first get the original account then update
 		String querysql = "select account from accounts where cardnum=?";
 		String updatesql = "update accounts set account = ? where cardnum=?";
 		boolean flag = false;
 		try{
 			conn = JdbcUtils.getConnection();
-			//先设置sql语句 
 			pstmt = conn.prepareStatement(querysql);
-			//传卡号进去
 			pstmt.setString(1, cardnum);
-			//执行查询获得结果集
 			rs = pstmt.executeQuery();
 			double old_money = -1,new_money = -1;
 			//如果有下一行，取出这个原来的钱，进行运算；
@@ -137,25 +129,19 @@ public class Accountdao implements IAccountdao {
 		Connection  conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		//先查看原来有多少钱，再更新
+		//first check account and then compute the new account
 		String querysql = "select account from accounts where cardnum=?";
 		String updatesql = "update accounts set account = ? where cardnum=?";
 		boolean flag = false;
 		try{
 			conn = JdbcUtils.getConnection();
-			//先设置sql语句 
 			pstmt = conn.prepareStatement(querysql);
-			//传卡号进去
 			pstmt.setString(1, cardnum);
-			//执行查询获得结果集
 			rs = pstmt.executeQuery();
 			double old_money = -1,new_money = -1;
-			//如果有下一行，取出这个原来的钱，进行运算；
-			//公式单独拿出来，不要写到sql语句里面，因为不同的利息算法不同
 			if(rs.next()){
 				old_money = rs.getDouble("account");
 				new_money = math.add(old_money,money);
-				//如果新的有钱，执行更新
 				if (new_money>0){
 					pstmt = conn.prepareStatement(updatesql);
 					pstmt.setDouble(1, new_money);

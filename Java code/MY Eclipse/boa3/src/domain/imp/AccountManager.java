@@ -15,11 +15,12 @@ public class AccountManager implements IAccountManager {
 	public boolean login(String cardnum, String pin) {
 		IAccountdao accountdao = null;
 		boolean flag = false;
+		//if this is my bank, call my own dao
 		if(this.bankPrefix.equals(cardnum.substring(0,4))){
 			accountdao = new Accountdao();
 			flag = accountdao.findAccoutByIdandPin(cardnum, pin);
 		}else{
-			//远程调用
+			//else call web service client function
 			AccountManagerService client = new AccountManagerService();
 			AccountManagerDelegate accountmanager = client.getAccountManagerPort();
 			flag = accountmanager.login(cardnum, pin);
@@ -39,11 +40,12 @@ public class AccountManager implements IAccountManager {
 	public double querybalance(String cardnum) {
 		IAccountdao accountdao = null;
 		double money = -1;
+		//if this is my bank, call my own dao
 		if(this.bankPrefix.equals(cardnum.substring(0,4))){
 			accountdao = new Accountdao();
 			money = accountdao.queryaccount(cardnum);
 		}else{
-		//远程调用
+		//else call web service client function
 			AccountManagerService client = new AccountManagerService();
 			AccountManagerDelegate accountmanager = client.getAccountManagerPort();
 			money = accountmanager.querybalance(cardnum);
@@ -57,11 +59,12 @@ public class AccountManager implements IAccountManager {
 	public boolean fetch(String cardnum, double money) {
 		IAccountdao accountdao = null;
 		boolean flag = false;
+		//if this is my bank, call my own dao
 		if(this.bankPrefix.equals(cardnum.substring(0,4))){
 			accountdao = new Accountdao();
 			flag = accountdao.fetch(cardnum, money);
 		}else{
-			//远程调用
+			//else call web service client function
 			AccountManagerService client = new AccountManagerService();
 			AccountManagerDelegate accountmanager = client.getAccountManagerPort();
 			flag = accountmanager.fetch(cardnum, money);
@@ -74,11 +77,12 @@ public class AccountManager implements IAccountManager {
 	public boolean deposit(String cardnum, double money) {
 		IAccountdao accountdao = null;
 		boolean flag = false;
+		//if this is my bank, call my own dao
 		if(this.bankPrefix.equals(cardnum.substring(0,4))){
 			accountdao = new Accountdao();
 			flag = accountdao.deposit(cardnum, money);
 		}else{
-			//远程调用
+			//else call web service client function
 			AccountManagerService client = new AccountManagerService();
 			AccountManagerDelegate accountmanager = client.getAccountManagerPort();
 			flag = accountmanager.deposit(cardnum, money);

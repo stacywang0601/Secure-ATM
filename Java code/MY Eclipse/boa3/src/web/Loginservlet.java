@@ -35,13 +35,14 @@ public class Loginservlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		
-		//创建session
+		//set up http session
 		HttpSession session = request.getSession();
-		//获取卡号密码，
+		//get cardnum and pwd
 		String cardNum = request.getParameter("cardnum");
 		String pwd = request.getParameter("pwd");
 		String mdpwd = null;
-	
+	    
+	    //encrpyt pwd using md5 digest algorithm
 		try {
 			MessageDigest md5 = MessageDigest.getInstance("md5");  
 		    byte[] cipherData = md5.digest(pwd.getBytes());  
@@ -51,25 +52,23 @@ public class Loginservlet extends HttpServlet {
 		        builder.append(toHexStr.length() == 1 ? "0" + toHexStr : toHexStr);  
 		    }  
 		    mdpwd = builder.toString();
-		    //System.out.println(mdpwd);  
-			
-			
+		    //System.out.println(mdpwd);  		
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//web调用业务逻辑层
+		//web call manager 
 		IAccountManager accountManager = new AccountManager();
 		boolean flag = accountManager.login(cardNum, mdpwd);
-		//如果匹配进入main
+		//if it matched, then go to main.jsp
 		if(flag){
-			//session里面存放卡号，便于后续操作
+			//put cardnum into session so that it would be easy later
 			session.setAttribute("cardnum", cardNum);
-			//转发至main
+			//go to main
 			request.getRequestDispatcher("/WEB-INF/jsp/main.jsp").forward(request, response);
 		}else{
-			//再login里面添加message
+			//if not matched, return worng message,stay at login.jsp
 			request.setAttribute("message", "Wrong carnum or PIN");
 			request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
 		}

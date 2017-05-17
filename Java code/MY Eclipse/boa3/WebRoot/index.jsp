@@ -13,7 +13,6 @@
   </head>
   
   <body>
-    <!--use redirect servlet to redirect to login-->
-    <c:redirect url="redirect"></c:redirect>
+ <c:redirect url="redirect"></c:redirect>
   </body>
 </html>
